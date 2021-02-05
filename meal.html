@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+  <title>학남중 급식</title> 
+  <script>
+    $(function(){
+        $KEY = "376c66873c3845a485f42bc79baa29ce"
+        $t = new Date();
+        $tyear = $t.getFullYear()
+        $tmonth = $t.getMonth()+1;
+        $tdate = $t.getDate();
+        if($tmonth <10){
+            $tmonth = "0"+$tmonth;
+        }
+
+        if($tdate <10){
+            $tdate = "0"+$tdate;
+        }
+        
+        $today = $tyear + $tmonth + $tdate;
+        $YMD = String(prompt("year,month,date ex(20190304  <=2019년 3월 4일 (기본값 : 오늘 날짜)",$today));
+        $.ajax({
+            url : "https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&KEY="+$KEY+"&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=D10&SD_SCHUL_CODE=7261028&MLSV_YMD="+$YMD,
+            type : "GET",
+            dataType : "json",
+            success : function(data){
+                $(".YMD").append($YMD);
+                try{
+                    $meal = data.mealServiceDietInfo[1].row[0].DDISH_NM;
+                    $(".meal").append($meal);
+                }catch(e){
+                $error = data.RESULT.MESSAGE;
+                    $(".error").append($error);
+                    $(".error").css({
+                        "font-size" : "80px",
+                        "font-family": "'Nanum Pen Script', cursive",
+                        "text-align" : "center"
+                    });
+                }
+            
+            },
+            error : function(){
+                console.log("error");
+            }
+        })
+    });
+</script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+
+    html{
+        background-color: aquamarine;
+    }
+
+    .title{
+        text-align: center;
+        font-size: 50px;
+    }
+
+    .YMD{
+        text-align: center;
+    }
+
+    .meal{
+        font-size: 30px;
+        text-align: center;
+        margin: auto;
+        padding: 20px;
+        width: auto;
+        height: auto;
+        border-radius: 20px;
+        background-color: aqua;
+        font-family: 'Black Han Sans', sans-serif;
+    }
+</style>
+ </head>   
+ <body> 
+  <h1 class="title">
+   <학남중 급식></학남중></h1> 
+  <h1 class="YMD"></h1> 
+  <p class="meal"></p> 
+  <p class="error"></p> 
+  <p class="asdf">제작자 : 수영<br>안되면 연락주세요(미완성)<br>api는 학생나이스 api를 썼습니다.</p>  
+ </body>
+</html>
